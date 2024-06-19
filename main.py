@@ -212,3 +212,115 @@ class AplikasiManajemenSiswa:
 
         tk.Button(self.input_frame, text="Update", command=self.update_siswa).grid(row=4, column=0, columnspan=2, pady=5)
         
+def update_siswa(self):
+        nis = self.nis_entry.get()
+        nama_baru = self.nama_baru_entry.get()
+        nilai_baru = self.nilai_baru_entry.get()
+        evaluasi_baru = self.evaluasi_baru_entry.get()
+
+        if nis:
+            if self.manajemen.update_siswa(nis, 
+                                           nama_baru if nama_baru else None, 
+                                           int(nilai_baru) if nilai_baru else None, 
+                                           evaluasi_baru if evaluasi_baru else None):
+                messagebox.showinfo("Sukses", "Siswa berhasil diupdate.")
+                self.clear_input()
+            else:
+                messagebox.showwarning("Error", "Siswa tidak ditemukan.")
+        else:
+            messagebox.showwarning("Error", "NIS tidak boleh kosong.")
+
+    def show_hapus_siswa(self):
+        self.clear_input()
+        tk.Label(self.input_frame, text="NIS:").grid(row=0, column=0)
+        self.nis_entry = tk.Entry(self.input_frame)
+        self.nis_entry.grid(row=0, column=1)
+        self.nis_entry.config(validate="key", validatecommand=(self.root.register(self.validate_nis), '%P'))
+
+        tk.Button(self.input_frame, text="Hapus", command=self.hapus_siswa).grid(row=1, column=0, columnspan=2, pady=5)
+
+    def hapus_siswa(self):
+        nis = self.nis_entry.get()
+
+        if nis:
+            self.manajemen.hapus_siswa(nis)
+            messagebox.showinfo("Sukses", "Siswa berhasil dihapus.")
+            self.clear_input()
+        else:
+            messagebox.showwarning("Error", "NIS tidak boleh kosong.")
+
+    def lihat_siswa_berdasarkan_nama(self):
+        self.clear_output()
+        self.manajemen.bubble_sort_by_name()
+        if not self.manajemen.siswa_list:
+            messagebox.showinfo("Info", "Tidak ada siswa yang tersedia.")
+        else:
+            self.tampilkan_siswa(self.manajemen.siswa_list)
+
+    def lihat_siswa_berdasarkan_nilai(self):
+        self.clear_output()
+        self.manajemen.bubble_sort_by_nilai()
+        if not self.manajemen.siswa_list:
+            messagebox.showinfo("Info", "Tidak ada siswa yang tersedia.")
+        else:
+            self.tampilkan_siswa(self.manajemen.siswa_list)
+
+    def tampilkan_siswa(self, siswa_list):
+        headers = ["NIS", "Nama", "Nilai", "Evaluasi"]
+        for i, header in enumerate(headers):
+            tk.Label(self.output_frame, text=header, font=('bold', 12)).grid(row=0, column=i)
+
+        for i, siswa in enumerate(siswa_list, start=1):
+            tk.Label(self.output_frame, text=siswa.nis).grid(row=i, column=0)
+            tk.Label(self.output_frame, text=siswa.nama).grid(row=i, column=1)
+            tk.Label(self.output_frame, text=siswa.nilai).grid(row=i, column=2)
+            tk.Label(self.output_frame, text=siswa.evaluasi).grid(row=i, column=3)
+
+    def show_cari_siswa_berdasarkan_nama(self):
+        self.clear_input()
+        tk.Label(self.input_frame, text="Nama:").grid(row=0, column=0)
+        self.nama_entry = tk.Entry(self.input_frame)
+        self.nama_entry.grid(row=0, column=1)
+        self.nama_entry.config(validate="key", validatecommand=(self.root.register(self.validate_nama), '%P'))
+
+        tk.Button(self.input_frame, text="Cari", command=self.cari_siswa_berdasarkan_nama).grid(row=1, column=0, columnspan=2, pady=5)
+
+    def cari_siswa_berdasarkan_nama(self):
+        self.clear_output()
+        target = self.nama_entry.get()
+        result = self.manajemen.binary_search_by_name(target)
+        if result:
+            tk.Label(self.output_frame, text="Siswa Ditemukan:", font=('bold', 12)).grid(row=0, column=0, columnspan=4)
+            tk.Label(self.output_frame, text=f"NIS: {result.nis}").grid(row=1, column=0, sticky='w')
+            tk.Label(self.output_frame, text=f"Nama: {result.nama}").grid(row=2, column=0, sticky='w')
+            tk.Label(self.output_frame, text=f"Nilai: {result.nilai}").grid(row=3, column=0, sticky='w')
+            tk.Label(self.output_frame, text=f"Evaluasi: {result.evaluasi}").grid(row=4, column=0, sticky='w')
+        else:
+            messagebox.showinfo("Info", "Siswa tidak ditemukan.")
+
+    def show_cari_siswa_berdasarkan_nis(self):
+        self.clear_input()
+        tk.Label(self.input_frame, text="NIS:").grid(row=0, column=0)
+        self.nis_entry = tk.Entry(self.input_frame)
+        self.nis_entry.grid(row=0, column=1)
+        self.nis_entry.config(validate="key", validatecommand=(self.root.register(self.validate_nis), '%P'))
+
+        tk.Button(self.input_frame, text="Cari", command=self.cari_siswa_berdasarkan_nis).grid(row=1, column=0, columnspan=2, pady=5)
+
+    def cari_siswa_berdasarkan_nis(self):
+        self.clear_output()
+        target = self.nis_entry.get()
+        result = self.manajemen.binary_search_by_nis(target)
+        if result:
+            tk.Label(self.output_frame, text="Siswa Ditemukan:", font=('bold', 12)).grid(row=0, column=0, columnspan=4)
+            tk.Label(self.output_frame, text=f"NIS: {result.nis}").grid(row=1, column=0, sticky='w')
+            tk.Label(self.output_frame, text=f"Nama: {result.nama}").grid(row=2, column=0, sticky='w')
+            tk.Label(self.output_frame, text=f"Nilai: {result.nilai}").grid(row=3, column=0, sticky='w')
+            tk.Label(self.output_frame, text=f"Evaluasi: {result.evaluasi}").grid(row=4, column=0, sticky='w')
+        else:
+            messagebox.showinfo("Info", "Siswa tidak ditemukan.")
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = AplikasiManajemenSiswa(root)
+    root.mainloop()
