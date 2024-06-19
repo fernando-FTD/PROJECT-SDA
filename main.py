@@ -94,3 +94,121 @@ class ManajemenSiswa:
             else:
                 high = mid - 1
         return None
+class AplikasiManajemenSiswa:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Manajemen Siswa")
+        self.manajemen = ManajemenSiswa("data_siswa.txt")
+        
+        self.create_widgets()
+
+    def create_widgets(self):
+        self.menu_frame = tk.Frame(self.root)
+        self.menu_frame.pack(pady=20)
+
+        tk.Label(self.menu_frame, text="Menu:").grid(row=0, column=0, columnspan=2)
+        
+        tk.Button(self.menu_frame, text="Tambah Siswa", command=self.show_tambah_siswa).grid(row=1, column=0, pady=5)
+        tk.Button(self.menu_frame, text="Update Siswa", command=self.show_update_siswa).grid(row=1, column=1, pady=5)
+        tk.Button(self.menu_frame, text="Hapus Siswa", command=self.show_hapus_siswa).grid(row=2, column=0, pady=5)
+        tk.Button(self.menu_frame, text="Lihat Siswa Berdasarkan Nama", command=self.lihat_siswa_berdasarkan_nama).grid(row=2, column=1, pady=5)
+        tk.Button(self.menu_frame, text="Lihat Siswa Berdasarkan Nilai", command=self.lihat_siswa_berdasarkan_nilai).grid(row=3, column=0, pady=5)
+        tk.Button(self.menu_frame, text="Cari Siswa Berdasarkan Nama", command=self.show_cari_siswa_berdasarkan_nama).grid(row=3, column=1, pady=5)
+        tk.Button(self.menu_frame, text="Cari Siswa Berdasarkan NIS", command=self.show_cari_siswa_berdasarkan_nis).grid(row=4, column=0, pady=5)
+        tk.Button(self.menu_frame, text="Keluar", command=self.root.quit).grid(row=4, column=1, pady=5)
+
+        self.input_frame = tk.Frame(self.root)
+        self.input_frame.pack(pady=20)
+
+        self.output_frame = tk.Frame(self.root)
+        self.output_frame.pack(pady=20)
+
+    def clear_output(self):
+        for widget in self.output_frame.winfo_children():
+            widget.destroy()
+
+    def clear_input(self):
+        for widget in self.input_frame.winfo_children():
+            widget.destroy()
+
+    def show_tambah_siswa(self):
+        self.clear_input()
+        tk.Label(self.input_frame, text="NIS:").grid(row=0, column=0)
+        self.nis_entry = tk.Entry(self.input_frame)
+        self.nis_entry.grid(row=0, column=1)
+        self.nis_entry.config(validate="key", validatecommand=(self.root.register(self.validate_nis), '%P'))
+
+        tk.Label(self.input_frame, text="Nama:").grid(row=1, column=0)
+        self.nama_entry = tk.Entry(self.input_frame)
+        self.nama_entry.grid(row=1, column=1)
+        self.nama_entry.config(validate="key", validatecommand=(self.root.register(self.validate_nama), '%P'))
+
+        tk.Label(self.input_frame, text="Nilai:").grid(row=2, column=0)
+        self.nilai_entry = tk.Entry(self.input_frame)
+        self.nilai_entry.grid(row=2, column=1)
+        self.nilai_entry.config(validate="key", validatecommand=(self.root.register(self.validate_nilai), '%P'))
+
+        tk.Label(self.input_frame, text="Evaluasi:").grid(row=3, column=0)
+        self.evaluasi_entry = tk.Entry(self.input_frame)
+        self.evaluasi_entry.grid(row=3, column=1)
+
+        tk.Button(self.input_frame, text="Tambah", command=self.tambah_siswa).grid(row=4, column=0, columnspan=2, pady=5)
+
+    def validate_nis(self, nis):
+        if nis == "":
+            return True
+        return len(nis) <= 4 and nis.isdigit()
+
+    def validate_nama(self, nama):
+        if nama == "":
+            return True
+        valid_chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ .'-"
+        for char in nama:
+            if char not in valid_chars:
+                return False
+        return True
+
+    def validate_nilai(self, nilai):
+        if nilai == "":
+            return True
+        if nilai.isdigit():
+            nilai_int = int(nilai)
+            return 0 <= nilai_int <= 100
+        return False
+
+    def tambah_siswa(self):
+        nis = self.nis_entry.get()
+        nama = self.nama_entry.get()
+        nilai = self.nilai_entry.get()
+        evaluasi = self.evaluasi_entry.get()
+
+        if nis and nama and nilai and evaluasi:
+            self.manajemen.tambah_siswa(nis, nama, int(nilai), evaluasi)
+            messagebox.showinfo("Sukses", "Siswa berhasil ditambahkan.")
+            self.clear_input()
+        else:
+            messagebox.showwarning("Error", "Data tidak lengkap.")
+
+    def show_update_siswa(self):
+        self.clear_input()
+        tk.Label(self.input_frame, text="NIS:").grid(row=0, column=0)
+        self.nis_entry = tk.Entry(self.input_frame)
+        self.nis_entry.grid(row=0, column=1)
+        self.nis_entry.config(validate="key", validatecommand=(self.root.register(self.validate_nis), '%P'))
+
+        tk.Label(self.input_frame, text="Nama Baru:").grid(row=1, column=0)
+        self.nama_baru_entry = tk.Entry(self.input_frame)
+        self.nama_baru_entry.grid(row=1, column=1)
+        self.nama_baru_entry.config(validate="key", validatecommand=(self.root.register(self.validate_nama), '%P'))
+
+        tk.Label(self.input_frame, text="Nilai Baru:").grid(row=2, column=0)
+        self.nilai_baru_entry = tk.Entry(self.input_frame)
+        self.nilai_baru_entry.grid(row=2, column=1)
+        self.nilai_baru_entry.config(validate="key", validatecommand=(self.root.register(self.validate_nilai), '%P'))
+
+        tk.Label(self.input_frame, text="Evaluasi Baru:").grid(row=3, column=0)
+        self.evaluasi_baru_entry = tk.Entry(self.input_frame)
+        self.evaluasi_baru_entry.grid(row=3, column=1)
+
+        tk.Button(self.input_frame, text="Update", command=self.update_siswa).grid(row=4, column=0, columnspan=2, pady=5)
+        
