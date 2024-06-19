@@ -1,2 +1,2 @@
 # PROJECT-SDA
-sistem manajemen inventaris barang elektronik
+sistem manajemen nilai dan evaluasi siswa
