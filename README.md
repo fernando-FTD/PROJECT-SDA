@@ -1,5 +1,4 @@
-# PROJECT-SDA
-sistem manajemen nilai dan evaluasi siswa
+# Sistem Manajemen Nilai dan Evaluasi Siswa
 
 Fernando Ramadhani 2317051060
 
