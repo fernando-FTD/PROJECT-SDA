@@ -212,23 +212,23 @@ class AplikasiManajemenSiswa:
 
         tk.Button(self.input_frame, text="Update", command=self.update_siswa).grid(row=4, column=0, columnspan=2, pady=5)
         
-def update_siswa(self):
-        nis = self.nis_entry.get()
-        nama_baru = self.nama_baru_entry.get()
-        nilai_baru = self.nilai_baru_entry.get()
-        evaluasi_baru = self.evaluasi_baru_entry.get()
-
-        if nis:
-            if self.manajemen.update_siswa(nis, 
-                                           nama_baru if nama_baru else None, 
-                                           int(nilai_baru) if nilai_baru else None, 
-                                           evaluasi_baru if evaluasi_baru else None):
-                messagebox.showinfo("Sukses", "Siswa berhasil diupdate.")
-                self.clear_input()
+    def update_siswa(self):
+            nis = self.nis_entry.get()
+            nama_baru = self.nama_baru_entry.get()
+            nilai_baru = self.nilai_baru_entry.get()
+            evaluasi_baru = self.evaluasi_baru_entry.get()
+    
+            if nis:
+                if self.manajemen.update_siswa(nis, 
+                                               nama_baru if nama_baru else None, 
+                                               int(nilai_baru) if nilai_baru else None, 
+                                               evaluasi_baru if evaluasi_baru else None):
+                    messagebox.showinfo("Sukses", "Siswa berhasil diupdate.")
+                    self.clear_input()
+                else:
+                    messagebox.showwarning("Error", "Siswa tidak ditemukan.")
             else:
-                messagebox.showwarning("Error", "Siswa tidak ditemukan.")
-        else:
-            messagebox.showwarning("Error", "NIS tidak boleh kosong.")
+                messagebox.showwarning("Error", "NIS tidak boleh kosong.")
 
     def show_hapus_siswa(self):
         self.clear_input()
